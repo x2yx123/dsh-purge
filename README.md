@@ -4,7 +4,28 @@
 
 <h1 align="center">⚔️ dsh-purge — DeepSeek Harness 破甲 / 红队评测插件</h1>
 
-<p align="center"><strong>镜像重建版 v1.1.71</strong></p>
+> ## 🔧 本分支：`rc4-adapt`（0.2.1-rc.4 / DSH NEXT 适配版）
+>
+> 上游 v1.1.71 是按 **DSH `0.2.0-rc.2` + exe 名 `DeepSeek Harness.exe`** 写的，装到 **`0.2.1-rc.4` + exe 名 `DSH NEXT.exe`** 的宿主上会二连崩：先「插件根未找到 / set DSH_BASE」导致「应用」永远点不动，绕过之后又会因为 `{{cwd}}` 变量被废弃而让每次会话启动都失败。
+>
+> 本分支只做**版本适配**，不改任何功能：82 条补丁、分组、UI、shim、hooks 全部保持原样。改动集中在这 5 个文件：
+>
+> | 文件 | 改动 |
+> | --- | --- |
+> | `cordis.patch.yml` | `personaSuffix` 里废弃的 `{{cwd}}` 换成静态句 `Your working directory is provided in the runtime context.` |
+> | `lib/identity.js` | `overlayOfficialIdentity(sections, variables)` 增加 `variables` 参数；宿主不提供 `variables.cwd` 时不再写入 persona-suffix |
+> | `lib/desktop.js` | `OFFICIAL_HARNESS_BASES`、`exeCandidatesBeside()`、`commonDesktopInstallDirs()` 加入 `DSH NEXT.exe` / `DSH NEXT`（含 `pf` / `pf86` / `MacOS` / `Contents/MacOS` 各路径） |
+> | `lib/surface.js` | `pathLooksDesktop()` 与 `isDesktopSurface()` 认 `dsh next` / `dsh next.exe` |
+> | `lib/core.js` | 按 rc.4 的新写法重写 4 条漂移锚点，并补 `harness-dev-context` 目标 |
+>
+> **4 条锚点漂移**：rc.4 把 Web GUI 自我介绍从 `dsh-web-app` 搬到了 `dsh-harness-dev-context`（#32、#53），给 `revised.clear()` 加了 `size > 0` 前置判断（#77），把 `contexts: []` 改成 `requiredContexts` 过滤（#40）。上游锚点在这四处全部失配。
+>
+> 适配后 `patchStatus` 为 `{applied: 68, na: 14}`，本机可落地的补丁全部应用，零 pending / 零 skipped。
+>
+> 装法与本仓库其余部分相同；如果你还装了 `@linxin666/dsh-liangshen` 预设，`#71` 与 `#24` 也会自动生效。
+
+
+<p align="center"><strong>镜像重建版 v1.1.71</strong> · <strong>rc4-adapt 分支适配 0.2.1-rc.4</strong></p>
 
 <p align="center">
   <em>完整源码取自原仓库 <code>YuJunZhiXue/dsh-purge</code> v1.1.71（原仓库与 npm 包均已删除），本仓库只做保存与再分发，署名要求照旧。</em>
@@ -13,7 +34,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/version-1.1.71-1a73e8?style=flat" alt="version">
   <img src="https://img.shields.io/badge/license-MIT-65a30d?style=flat" alt="MIT">
-  <img src="https://img.shields.io/badge/dsh-0.2.0--rc.2-blue" alt="dsh 0.2">
+  <img src="https://img.shields.io/badge/dsh-0.2.1--rc.4-blue" alt="dsh 0.2.1-rc.4">
   <img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?logo=node.js&logoColor=fff" alt="Node.js">
 </p>
 

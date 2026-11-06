@@ -18,5 +18,5 @@
 
 ```powershell
 # 最短路径：装到桌面宿主
-dsh plugin --profile desktop add https://github.com/ZXEB/dsh-purge/archive/refs/heads/master.tar.gz
+dsh plugin --profile desktop add https://github.com/x2yx123/dsh-purge/archive/refs/heads/rc4-adapt.tar.gz
 ```
